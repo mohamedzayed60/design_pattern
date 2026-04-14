@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laravel Graduation Project — ShopZone</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #f8f7f4;
+    --surface: #ffffff;
+    --surface2: #f1efe8;
+    --border: rgba(0,0,0,0.12);
+    --border2: rgba(0,0,0,0.22);
+    --text: #1a1a18;
+    --text2: #5f5e5a;
+    --text3: #888780;
+    --purple-bg: #EEEDFE; --purple-mid: #534AB7; --purple-dark: #3C3489;
+    --teal-bg: #E1F5EE; --teal-mid: #0F6E56; --teal-dark: #085041;
+    --coral-bg: #FAECE7; --coral-mid: #993C1D; --coral-dark: #712B13;
+    --amber-bg: #FAEEDA; --amber-mid: #854F0B; --amber-dark: #633806;
+    --blue-bg: #E6F1FB; --blue-mid: #185FA5; --blue-dark: #0C447C;
+    --green-bg: #EAF3DE; --green-mid: #3B6D11; --green-dark: #27500A;
+    --pink-bg: #FBEAF0; --pink-mid: #993556; --pink-dark: #72243E;
+    --red-bg: #FCEBEB; --red-mid: #A32D2D; --red-dark: #791F1F;
+    --radius: 10px;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.65; font-size: 15px; }
+
+  /* HERO */
+  .hero { background: #1a1a18; color: #fff; padding: 60px 40px 50px; text-align: center; }
+  .hero .badge { display: inline-block; background: rgba(255,255,255,0.1); border: 0.5px solid rgba(255,255,255,0.2); padding: 4px 14px; border-radius: 20px; font-size: 12px; letter-spacing: 0.04em; margin-bottom: 20px; color: #d3d1c7; }
+  .hero h1 { font-size: 42px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px; }
+  .hero h1 span { color: #AFA9EC; }
+  .hero p { font-size: 17px; color: #b4b2a9; max-width: 600px; margin: 0 auto 28px; }
+  .hero-tags { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .hero-tags span { background: rgba(255,255,255,0.08); border: 0.5px solid rgba(255,255,255,0.15); padding: 5px 14px; border-radius: 20px; font-size: 13px; color: #d3d1c7; }
+
+  /* NAV */
+  .nav { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border-bottom: 0.5px solid var(--border); padding: 0 24px; display: flex; gap: 4px; overflow-x: auto; }
+  .nav a { display: inline-block; padding: 14px 16px; font-size: 13px; font-weight: 500; color: var(--text2); text-decoration: none; white-space: nowrap; border-bottom: 2px solid transparent; transition: all 0.15s; cursor: pointer; }
+  .nav a:hover, .nav a.active { color: var(--text); border-bottom-color: #534AB7; }
+
+  /* SECTIONS */
+  .section { display: none; max-width: 960px; margin: 0 auto; padding: 40px 24px 60px; }
+  .section.active { display: block; }
+  .section-title { font-size: 26px; font-weight: 600; margin-bottom: 6px; letter-spacing: -0.01em; }
+  .section-sub { font-size: 15px; color: var(--text2); margin-bottom: 32px; }
+  h2 { font-size: 19px; font-weight: 600; margin: 32px 0 14px; }
+  h3 { font-size: 16px; font-weight: 600; margin: 20px 0 10px; color: var(--text2); }
+
+  /* CARDS GRID */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; margin-bottom: 28px; }
+  .card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 18px; }
+  .card-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; margin-bottom: 12px; }
+  .card h3 { font-size: 14px; font-weight: 600; color: var(--text); margin: 0 0 6px; }
+  .card p { font-size: 13px; color: var(--text2); line-height: 1.5; }
+  .card ul { font-size: 13px; color: var(--text2); padding-left: 16px; line-height: 1.8; }
+
+  /* ROLES */
+  .roles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 28px; }
+  .role-card { border-radius: var(--radius); padding: 20px; border: 0.5px solid; }
+  .role-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 10px; }
+  .role-card ul { font-size: 13px; padding-left: 16px; line-height: 1.9; }
+
+  /* CODE BLOCKS */
+  .code-block { background: #1e1e1e; border-radius: var(--radius); padding: 20px 22px; overflow-x: auto; margin: 14px 0 24px; }
+  .code-block pre { font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace; font-size: 13px; line-height: 1.7; color: #d4d4d4; white-space: pre; }
+  .kw { color: #569cd6; }
+  .fn { color: #dcdcaa; }
+  .str { color: #ce9178; }
+  .cm { color: #6a9955; }
+  .cl { color: #4ec9b0; }
+  .va { color: #9cdcfe; }
+  .nu { color: #b5cea8; }
+  .file-label { display: inline-block; background: #2d2d2d; color: #9cdcfe; font-family: monospace; font-size: 12px; padding: 4px 12px; border-radius: 6px 6px 0 0; margin-bottom: -1px; }
+
+  /* TABLE */
+  .db-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 13px; }
+  .db-table th { background: var(--surface2); border: 0.5px solid var(--border); padding: 10px 14px; text-align: left; font-weight: 600; color: var(--text2); }
+  .db-table td { border: 0.5px solid var(--border); padding: 9px 14px; color: var(--text); }
+  .db-table tr:hover td { background: var(--bg); }
+  .pk { background: var(--purple-bg); color: var(--purple-dark); font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; }
+  .fk { background: var(--blue-bg); color: var(--blue-dark); font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; }
+  .idx { background: var(--teal-bg); color: var(--teal-dark); font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; }
+
+  /* BADGES */
+  .badge-pill { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; margin: 2px; }
+  .b-purple { background: var(--purple-bg); color: var(--purple-dark); }
+  .b-teal { background: var(--teal-bg); color: var(--teal-dark); }
+  .b-coral { background: var(--coral-bg); color: var(--coral-dark); }
+  .b-amber { background: var(--amber-bg); color: var(--amber-dark); }
+  .b-blue { background: var(--blue-bg); color: var(--blue-dark); }
+  .b-green { background: var(--green-bg); color: var(--green-dark); }
+  .b-pink { background: var(--pink-bg); color: var(--pink-dark); }
+
+  /* ROUTE TABLE */
+  .route-row { display: grid; grid-template-columns: 80px 1fr 1fr 120px; gap: 10px; align-items: center; padding: 10px 14px; border-bottom: 0.5px solid var(--border); font-size: 13px; }
+  .route-row.header { background: var(--surface2); font-weight: 600; font-size: 12px; color: var(--text2); border-radius: 8px 8px 0 0; border: 0.5px solid var(--border); }
+  .route-row:last-child { border-bottom: none; }
+  .routes-box { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 24px; }
+  .method { font-family: monospace; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; text-align: center; }
+  .get { background: var(--green-bg); color: var(--green-dark); }
+  .post { background: var(--blue-bg); color: var(--blue-dark); }
+  .put { background: var(--amber-bg); color: var(--amber-dark); }
+  .del { background: var(--red-bg); color: var(--red-dark); }
+  .route-path { font-family: monospace; font-size: 12px; color: var(--text); }
+  .route-name { font-size: 12px; color: var(--text2); }
+
+  /* PROGRESS / CHECKLIST */
+  .checklist { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 20px; }
+  .check-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px; border-bottom: 0.5px solid var(--border); }
+  .check-item:last-child { border-bottom: none; }
+  .check-dot { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; font-size: 11px; font-weight: 700; }
+  .dot-done { background: var(--teal-bg); color: var(--teal-dark); }
+  .dot-todo { background: var(--surface2); color: var(--text3); border: 0.5px solid var(--border); }
+  .check-text { font-size: 14px; }
+  .check-text b { font-weight: 600; display: block; margin-bottom: 2px; }
+  .check-text span { font-size: 12px; color: var(--text2); }
+
+  /* DIVIDER */
+  hr { border: none; border-top: 0.5px solid var(--border); margin: 28px 0; }
+  .section-break { font-size: 12px; font-weight: 600; color: var(--text3); letter-spacing: 0.06em; text-transform: uppercase; margin: 32px 0 14px; }
+
+  /* FOLDER TREE */
+  .tree { background: #1e1e1e; border-radius: var(--radius); padding: 20px 24px; font-family: monospace; font-size: 13px; line-height: 1.9; color: #d4d4d4; margin-bottom: 24px; }
+  .tree .dir { color: #569cd6; }
+  .tree .file { color: #d4d4d4; }
+  .tree .gray { color: #6a9955; }
+
+  /* STATS ROW */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 28px; }
+  .stat { background: var(--surface2); border-radius: 8px; padding: 16px; text-align: center; }
+  .stat .num { font-size: 26px; font-weight: 600; letter-spacing: -0.02em; }
+  .stat .lbl { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 28px; }
+    .roles { grid-template-columns: 1fr; }
+    .route-row { grid-template-columns: 70px 1fr; }
+    .route-row .route-name, .route-row .route-ctrl { display: none; }
+    .route-row.header .rh-name, .route-row.header .rh-ctrl { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="badge">Graduation Project 2024 / 2025</div>
+  <h1><span>ShopZone</span> — Multi-Vendor E-Commerce</h1>
+  <p>A full-featured marketplace platform built with PHP Laravel, MySQL, and modern web technologies. Designed to be completed by a single student.</p>
+  <div class="hero-tags">
+    <span>Laravel 11</span><span>MySQL 8</span><span>PHP 8.2</span><span>Blade Templates</span>
+    <span>Sanctum Auth</span><span>Spatie Roles</span><span>Stripe Payments</span><span>Livewire</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <a class="active" onclick="show('overview')">Overview</a>
+  <a onclick="show('auth')">Auth & Roles</a>
+  <a onclick="show('migrations')">Migrations</a>
+  <a onclick="show('seeders')">Seeders</a>
+  <a onclick="show('controllers')">Controllers</a>
+  <a onclick="show('routes')">Routes</a>
+  <a onclick="show('structure')">Structure</a>
+  <a onclick="show('features')">All Features</a>
+</nav>
+
+<!-- ======================== OVERVIEW ======================== -->
+<div class="section active" id="overview">
+  <div class="section-title">Project Overview</div>
+  <div class="section-sub">ShopZone is a multi-vendor e-commerce platform where admins manage the marketplace, vendors sell products, and customers shop — all with full Laravel MVC architecture.</div>
+
+  <div class="stats">
+    <div class="stat"><div class="num" style="color:#534AB7">3</div><div class="lbl">User Roles</div></div>
+    <div class="stat"><div class="num" style="color:#0F6E56">20+</div><div class="lbl">Migrations</div></div>
+    <div class="stat"><div class="num" style="color:#185FA5">15+</div><div class="lbl">Controllers</div></div>
+    <div class="stat"><div class="num" style="color:#BA7517">8+</div><div class="lbl">Seeders</div></div>
+    <div class="stat"><div class="num" style="color:#993C1D">60+</div><div class="lbl">Routes</div></div>
+    <div class="stat"><div class="num" style="color:#3B6D11">5</div><div class="lbl">Modules</div></div>
+  </div>
+
+  <h2>Core Modules</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon" style="background:var(--purple-bg)">👤</div>
+      <h3>User Management</h3>
+      <p>Register, login, profile editing, email verification, password reset, role-based access for Admin, Vendor, Customer.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--blue-bg)">🛍️</div>
+      <h3>Product Catalog</h3>
+      <p>Products with categories, tags, images gallery, variants (size/color), inventory tracking, and advanced search/filter.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--teal-bg)">🛒</div>
+      <h3>Shopping Cart & Orders</h3>
+      <p>Persistent cart, coupon codes, checkout flow, order management, status tracking (pending → shipped → delivered).</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--amber-bg)">💳</div>
+      <h3>Payment System</h3>
+      <p>Stripe integration, invoice generation, vendor commission calculation, refund handling, payment history.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--coral-bg)">📊</div>
+      <h3>Admin Dashboard</h3>
+      <p>Sales analytics, user management, vendor approval, category management, reports export (PDF/Excel).</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="background:var(--green-bg)">⭐</div>
+      <h3>Reviews & Wishlist</h3>
+      <p>Customer reviews with ratings, review moderation by admin, wishlist management, product recommendations.</p>
+    </div>
+  </div>
+
+  <h2>Tech Stack</h2>
+  <div class="card-grid">
+    <div class="card">
+      <h3>Backend</h3>
+      <ul>
+        <li>PHP 8.2 + Laravel 11</li>
+        <li>Laravel Sanctum (API Auth)</li>
+        <li>Spatie Laravel Permission</li>
+        <li>Laravel Mail + Queues</li>
+        <li>Intervention Image</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Frontend</h3>
+      <ul>
+        <li>Blade Templates</li>
+        <li>Livewire 3 (reactive UI)</li>
+        <li>Alpine.js (interactivity)</li>
+        <li>Tailwind CSS</li>
+        <li>Chart.js (dashboard)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Database & Storage</h3>
+      <ul>
+        <li>MySQL 8 (primary DB)</li>
+        <li>Redis (sessions/cache/queue)</li>
+        <li>Laravel Storage (images)</li>
+        <li>Cloudinary (optional CDN)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Dev Tools</h3>
+      <ul>
+        <li>Laravel Telescope (debug)</li>
+        <li>Pest PHP (testing)</li>
+        <li>Laravel Pint (code style)</li>
+        <li>Debugbar</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== AUTH & ROLES ======================== -->
+<div class="section" id="auth">
+  <div class="section-title">Authentication & Authorization</div>
+  <div class="section-sub">Full auth system using Laravel Breeze/Jetstream + Spatie Laravel Permission for role-based access control.</div>
+
+  <h2>User Roles</h2>
+  <div class="roles">
+    <div class="role-card" style="background:var(--purple-bg); border-color:#AFA9EC">
+      <h3 style="color:var(--purple-dark)">Admin</h3>
+      <ul style="color:var(--purple-dark)">
+        <li>Full system access</li>
+        <li>Manage all users</li>
+        <li>Approve vendors</li>
+        <li>Manage categories</li>
+        <li>View all orders</li>
+        <li>View reports</li>
+        <li>Manage coupons</li>
+        <li>Site settings</li>
+      </ul>
+    </div>
+    <div class="role-card" style="background:var(--teal-bg); border-color:#5DCAA5">
+      <h3 style="color:var(--teal-dark)">Vendor</h3>
+      <ul style="color:var(--teal-dark)">
+        <li>Manage own products</li>
+        <li>View own orders</li>
+        <li>Update order status</li>
+        <li>View own revenue</li>
+        <li>Manage store profile</li>
+        <li>Upload product images</li>
+        <li>Respond to reviews</li>
+      </ul>
+    </div>
+    <div class="role-card" style="background:var(--blue-bg); border-color:#85B7EB">
+      <h3 style="color:var(--blue-dark)">Customer</h3>
+      <ul style="color:var(--blue-dark)">
+        <li>Browse & search products</li>
+        <li>Add to cart / wishlist</li>
+        <li>Place orders</li>
+        <li>Track order status</li>
+        <li>Leave reviews</li>
+        <li>Manage addresses</li>
+        <li>View order history</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Auth Controllers</h2>
+
+  <div class="file-label">app/Http/Controllers/Auth/RegisterController.php</div>
+  <div class="code-block"><pre>
+<kw>class</kw> <cl>RegisterController</cl> <kw>extends</kw> <cl>Controller</cl>
+{
+    <kw>public function</kw> <fn>showRegistrationForm</fn>(): <cl>View</cl>
+    {
+        <kw>return</kw> <fn>view</fn>(<str>'auth.register'</str>);
+    }
+
+    <kw>public function</kw> <fn>register</fn>(<cl>RegisterRequest</cl> <va>$request</va>): <cl>RedirectResponse</cl>
+    {
+        <va>$user</va> = <cl>User</cl>::<fn>create</fn>([
+            <str>'name'</str>     => <va>$request</va>-><va>name</va>,
+            <str>'email'</str>    => <va>$request</va>-><va>email</va>,
+            <str>'password'</str> => <fn>bcrypt</fn>(<va>$request</va>-><va>password</va>),
+            <str>'role'</str>     => <va>$request</va>-><va>role</va> ?? <str>'customer'</str>,
+        ]);
+
+        <va>$user</va>-><fn>assignRole</fn>(<va>$user</va>-><va>role</va>);  <cm>// Spatie Permission</cm>
+
+        <fn>event</fn>(<kw>new</kw> <cl>Registered</cl>(<va>$user</va>));  <cm>// fires email verification</cm>
+
+        <fn>auth</fn>()-><fn>login</fn>(<va>$user</va>);
+
+        <kw>return</kw> <fn>redirect</fn>()-><fn>route</fn>(<str>'dashboard'</str>)
+                    -><fn>with</fn>(<str>'success'</str>, <str>'Account created successfully!'</str>);
+    }
+}
+</pre></div>
+
+  <div class="file-label">app/Http/Middleware/RoleMiddleware.php</div>
+  <div class="code-block"><pre>
+<kw>class</kw> <cl>RoleMiddleware</cl>
+{
+    <kw>public function</kw> <fn>handle</fn>(<cl>Request</cl> <va>$request</va>, <cl>Closure</cl> <va>$next</va>, <kw>string</kw> ...<va>$roles</va>): <cl>Response</cl>
+    {
+        <kw>if</kw> (!<fn>auth</fn>()-><fn>check</fn>()) {
+            <kw>return</kw> <fn>redirect</fn>()-><fn>route</fn>(<str>'login'</str>);
+        }
+
+        <kw>foreach</kw> (<va>$roles</va> <kw>as</kw> <va>$role</va>) {
+            <kw>if</kw> (<fn>auth</fn>()-><fn>user</fn>()-><fn>hasRole</fn>(<va>$role</va>)) {
+                <kw>return</kw> <va>$next</va>(<va>$request</va>);
+            }
+        }
+
+        <kw>return</kw> <fn>abort</fn>(<nu>403</nu>, <str>'Unauthorized action.'</str>);
+    }
+}
+
+<cm>// Usage in routes:</cm>
+<cm>// Route::middleware('role:admin,vendor')->group(...);</cm>
+</pre></div>
+
+  <h2>Policies</h2>
+  <div class="card-grid">
+    <div class="card">
+      <h3>ProductPolicy</h3>
+      <ul>
+        <li><code>viewAny</code>: everyone</li>
+        <li><code>view</code>: everyone</li>
+        <li><code>create</code>: vendor, admin</li>
+        <li><code>update</code>: owner vendor, admin</li>
+        <li><code>delete</code>: owner vendor, admin</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>OrderPolicy</h3>
+      <ul>
+        <li><code>viewAny</code>: admin only</li>
+        <li><code>view</code>: owner customer</li>
+        <li><code>update</code>: vendor (status), admin</li>
+        <li><code>cancel</code>: customer (pending only)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>ReviewPolicy</h3>
+      <ul>
+        <li><code>create</code>: customer (purchased)</li>
+        <li><code>update</code>: own review only</li>
+        <li><code>delete</code>: admin, own review</li>
+        <li><code>approve</code>: admin only</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== MIGRATIONS ======================== -->
+<div class="section" id="migrations">
+  <div class="section-title">Database Migrations</div>
+  <div class="section-sub">All 20+ migrations for the complete database schema — users, products, orders, payments, and more.</div>
+
+  <div class="section-break">Core Tables</div>
+
+  <h3>users table</h3>
+  <table class="db-table">
+    <tr><th>Column</th><th>Type</th><th>Notes</th></tr>
+    <tr><td>id <span class="pk">PK</span></td><td>bigint unsigned</td><td>auto increment</td></tr>
+    <tr><td>name</td><td>varchar(255)</td><td>required</td></tr>
+    <tr><td>email</td><td>varchar(255)</td><td>unique</td></tr>
+    <tr><td>password</td><td>varchar(255)</td><td>bcrypt hashed</td></tr>
+    <tr><td>role</td><td>enum</td><td>admin | vendor | customer</td></tr>
+    <tr><td>avatar</td><td>varchar(255)</td><td>nullable</td></tr>
+    <tr><td>phone</td><td>varchar(20)</td><td>nullable</td></tr>
+    <tr><td>is_active</td><td>boolean</td><td>default true</td></tr>
+    <tr><td>email_verified_at</td><td>timestamp</td><td>nullable</td></tr>
+    <tr><td>created_at / updated_at</td><td>timestamps</td><td></td></tr>
+  </table>
+
+  <div class="file-label">database/migrations/2024_01_01_create_products_table.php</div>
+  <div class="code-block"><pre>
+<cl>Schema</cl>::<fn>create</fn>(<str>'products'</str>, <kw>function</kw> (<cl>Blueprint</cl> <va>$table</va>) {
+    <va>$table</va>-><fn>id</fn>();
+    <va>$table</va>-><fn>foreignId</fn>(<str>'vendor_id'</str>)-><fn>constrained</fn>(<str>'users'</str>)-><fn>cascadeOnDelete</fn>();
+    <va>$table</va>-><fn>foreignId</fn>(<str>'category_id'</str>)-><fn>constrained</fn>()-><fn>restrictOnDelete</fn>();
+    <va>$table</va>-><fn>string</fn>(<str>'name'</str>);
+    <va>$table</va>-><fn>string</fn>(<str>'slug'</str>)-><fn>unique</fn>();
+    <va>$table</va>-><fn>text</fn>(<str>'description'</str>)-><fn>nullable</fn>();
+    <va>$table</va>-><fn>decimal</fn>(<str>'price'</str>, <nu>10</nu>, <nu>2</nu>);
+    <va>$table</va>-><fn>decimal</fn>(<str>'sale_price'</str>, <nu>10</nu>, <nu>2</nu>)-><fn>nullable</fn>();
+    <va>$table</va>-><fn>integer</fn>(<str>'stock'</str>)-><fn>default</fn>(<nu>0</nu>);
+    <va>$table</va>-><fn>string</fn>(<str>'sku'</str>)-><fn>unique</fn>()-><fn>nullable</fn>();
+    <va>$table</va>-><fn>enum</fn>(<str>'status'</str>, [<str>'active'</str>, <str>'inactive'</str>, <str>'pending'</str>])-><fn>default</fn>(<str>'pending'</str>);
+    <va>$table</va>-><fn>boolean</fn>(<str>'is_featured'</str>)-><fn>default</fn>(<kw>false</kw>);
+    <va>$table</va>-><fn>json</fn>(<str>'images'</str>)-><fn>nullable</fn>();
+    <va>$table</va>-><fn>decimal</fn>(<str>'rating_avg'</str>, <nu>3</nu>, <nu>2</nu>)-><fn>default</fn>(<nu>0</nu>);
+    <va>$table</va>-><fn>integer</fn>(<str>'rating_count'</str>)-><fn>default</fn>(<nu>0</nu>);
+    <va>$table</va>-><fn>timestamps</fn>();
+    <va>$table</va>-><fn>softDeletes</fn>();
+    <va>$table</va>-><fn>index</fn>([<str>'status'</str>, <str>'is_featured'</str>]);
+});
+</pre></div>
+
+  <div class="section-break">Orders & Payments</div>
+
+  <div class="file-label">database/migrations/2024_01_01_create_orders_table.php</div>
+  <div class="code-block"><pre>
+<cl>Schema</cl>::<fn>create</fn>(<str>'orders'</str>, <kw>function</kw> (<cl>Blueprint</cl> <va>$table</va>) {
+    <va>$table</va>-><fn>id</fn>();
+    <va>$table</va>-><fn>string</fn>(<str>'order_number'</str>)-><fn>unique</fn>(); <cm>// ORD-2024-0001</cm>
+    <va>$table</va>-><fn>foreignId</fn>(<str>'user_id'</str>)-><fn>constrained</fn>()-><fn>cascadeOnDelete</fn>();
+    <va>$table</va>-><fn>foreignId</fn>(<str>'address_id'</str>)-><fn>constrained</fn>();
+    <va>$table</va>-><fn>decimal</fn>(<str>'subtotal'</str>, <nu>10</nu>, <nu>2</nu>);
+    <va>$table</va>-><fn>decimal</fn>(<str>'discount'</str>, <nu>10</nu>, <nu>2</nu>)-><fn>default</fn>(<nu>0</nu>);
+    <va>$table</va>-><fn>decimal</fn>(<str>'shipping_fee'</str>, <nu>10</nu>, <nu>2</nu>)-><fn>default</fn>(<nu>0</nu>);
+    <va>$table</va>-><fn>decimal</fn>(<str>'total'</str>, <nu>10</nu>, <nu>2</nu>);
+    <va>$table</va>-><fn>string</fn>(<str>'coupon_code'</str>)-><fn>nullable</fn>();
+    <va>$table</va>-><fn>enum</fn>(<str>'status'</str>, [
+        <str>'pending'</str>, <str>'confirmed'</str>, <str>'processing'</str>,
+        <str>'shipped'</str>, <str>'delivered'</str>, <str>'cancelled'</str>, <str>'refunded'</str>
+    ])-><fn>default</fn>(<str>'pending'</str>);
+    <va>$table</va>-><fn>enum</fn>(<str>'payment_status'</str>, [<str>'unpaid'</str>, <str>'paid'</str>, <str>'refunded'</str>])-><fn>default</fn>(<str>'unpaid'</str>);
+    <va>$table</va>-><fn>text</fn>(<str>'notes'</str>)-><fn>nullable</fn>();
+    <va>$table</va>-><fn>timestamp</fn>(<str>'shipped_at'</str>)-><fn>nullable</fn>();
+    <va>$table</va>-><fn>timestamp</fn>(<str>'delivered_at'</str>)-><fn>nullable</fn>();
+    <va>$table</va>-><fn>timestamps</fn>();
+});
+
+<cm>// order_items — pivot between orders and products</cm>
+<cl>Schema</cl>::<fn>create</fn>(<str>'order_items'</str>, <kw>function</kw> (<cl>Blueprint</cl> <va>$table</va>) {
+    <va>$table</va>-><fn>id</fn>();
+    <va>$table</va>-><fn>foreignId</fn>(<str>'order_id'</str>)-><fn>constrained</fn>()-><fn>cascadeOnDelete</fn>();
+    <va>$table</va>-><fn>foreignId</fn>(<str>'product_id'</str>)-><fn>constrained</fn>();
+    <va>$table</va>-><fn>foreignId</fn>(<str>'vendor_id'</str>)-><fn>constrained</fn>(<str>'users'</str>);
+    <va>$table</va>-><fn>integer</fn>(<str>'quantity'</str>);
+    <va>$table</va>-><fn>decimal</fn>(<str>'unit_price'</str>, <nu>10</nu>, <nu>2</nu>);
+    <va>$table</va>-><fn>decimal</fn>(<str>'total_price'</str>, <nu>10</nu>, <nu>2</nu>);
+    <va>$table</va>-><fn>json</fn>(<str>'variant'</str>)-><fn>nullable</fn>(); <cm>// { size: 'L', color: 'red' }</cm>
+    <va>$table</va>-><fn>timestamps</fn>();
+});
+</pre></div>
+
+  <div class="section-break">All Migrations List</div>
+  <div class="checklist">
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>create_users_table</b><span>name, email, password, role, avatar, phone, is_active</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>create_vendor_profiles_table</b><span>store_name, description, logo, commission_rate, is_approved</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>create_categories_table</b><span>name, slug, parent_id (self-referencing), image, is_active</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>create_products_table</b><span>vendor_id, category_id, name, slug, price, stock, status, images</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>create_product_variants_table</b><span>product_id, size, color, price_modifier, stock_qty</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>create_product_tag_table</b><span>pivot: product_id, tag_id</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>create_tags_table</b><span>name, slug</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>create_addresses_table</b><span>user_id, label, street, city, country, is_default</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>create_cart_items_table</b><span>user_id, product_id, quantity, variant</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>create_wishlists_table</b><span>user_id, product_id (unique pair)</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>create_coupons_table</b><span>code, type, value, min_order, expires_at, usage_limit</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>create_orders_table</b><span>order_number, user_id, total, status, payment_status</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>create_order_items_table</b><span>order_id, product_id, vendor_id, quantity, unit_price</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>create_payments_table</b><span>order_id, stripe_id, method, amount, status, paid_at</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>create_reviews_table</b><span>product_id, user_id, rating, comment, is_approved</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>create_notifications_table</b><span>user_id, type, data (json), read_at</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>create_shipping_rates_table</b><span>region, min_weight, max_weight, price</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>create_vendor_commissions_table</b><span>vendor_id, order_item_id, amount, status, paid_at</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>create_settings_table</b><span>key, value (global site settings)</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>create_activity_logs_table</b><span>user_id, action, model, model_id, ip_address</span></div></div>
+  </div>
+</div>
+
+<!-- ======================== SEEDERS ======================== -->
+<div class="section" id="seeders">
+  <div class="section-title">Database Seeders</div>
+  <div class="section-sub">All seeders to populate the database with realistic dummy data using Faker and model factories.</div>
+
+  <div class="file-label">database/seeders/DatabaseSeeder.php</div>
+  <div class="code-block"><pre>
+<kw>class</kw> <cl>DatabaseSeeder</cl> <kw>extends</kw> <cl>Seeder</cl>
+{
+    <kw>public function</kw> <fn>run</fn>(): <kw>void</kw>
+    {
+        <va>$this</va>-><fn>call</fn>([
+            <cl>RolesAndPermissionsSeeder</cl>::<kw>class</kw>,  <cm>// always first!</cm>
+            <cl>AdminSeeder</cl>::<kw>class</kw>,
+            <cl>CategorySeeder</cl>::<kw>class</kw>,
+            <cl>TagSeeder</cl>::<kw>class</kw>,
+            <cl>VendorSeeder</cl>::<kw>class</kw>,
+            <cl>ProductSeeder</cl>::<kw>class</kw>,
+            <cl>CustomerSeeder</cl>::<kw>class</kw>,
+            <cl>CouponSeeder</cl>::<kw>class</kw>,
+            <cl>OrderSeeder</cl>::<kw>class</kw>,
+            <cl>ReviewSeeder</cl>::<kw>class</kw>,
+            <cl>SettingsSeeder</cl>::<kw>class</kw>,
+        ]);
+    }
+}
+</pre></div>
+
+  <div class="file-label">database/seeders/RolesAndPermissionsSeeder.php</div>
+  <div class="code-block"><pre>
+<kw>class</kw> <cl>RolesAndPermissionsSeeder</cl> <kw>extends</kw> <cl>Seeder</cl>
+{
+    <kw>public function</kw> <fn>run</fn>(): <kw>void</kw>
+    {
+        <fn>app</fn>()[<cl>PermissionRegistrar</cl>::<kw>class</kw>]-><fn>forgetCachedPermissions</fn>();
+
+        <va>$permissions</va> = [
+            <str>'products.create'</str>, <str>'products.edit'</str>, <str>'products.delete'</str>, <str>'products.view'</str>,
+            <str>'orders.view'</str>, <str>'orders.update'</str>, <str>'orders.cancel'</str>,
+            <str>'users.manage'</str>, <str>'vendors.approve'</str>, <str>'categories.manage'</str>,
+            <str>'coupons.manage'</str>, <str>'reviews.moderate'</str>, <str>'reports.view'</str>,
+        ];
+
+        <kw>foreach</kw> (<va>$permissions</va> <kw>as</kw> <va>$perm</va>) {
+            <cl>Permission</cl>::<fn>create</fn>([<str>'name'</str> => <va>$perm</va>]);
+        }
+
+        <cm>// Admin gets all permissions</cm>
+        <cl>Role</cl>::<fn>create</fn>([<str>'name'</str> => <str>'admin'</str>])-><fn>givePermissionTo</fn>(<cl>Permission</cl>::<fn>all</fn>());
+
+        <cm>// Vendor gets product + order permissions</cm>
+        <cl>Role</cl>::<fn>create</fn>([<str>'name'</str> => <str>'vendor'</str>])-><fn>givePermissionTo</fn>([
+            <str>'products.create'</str>, <str>'products.edit'</str>, <str>'products.delete'</str>,
+            <str>'orders.view'</str>, <str>'orders.update'</str>,
+        ]);
+
+        <cm>// Customer gets basic permissions</cm>
+        <cl>Role</cl>::<fn>create</fn>([<str>'name'</str> => <str>'customer'</str>])-><fn>givePermissionTo</fn>([
+            <str>'orders.view'</str>, <str>'orders.cancel'</str>,
+        ]);
+    }
+}
+</pre></div>
+
+  <div class="file-label">database/factories/ProductFactory.php</div>
+  <div class="code-block"><pre>
+<kw>class</kw> <cl>ProductFactory</cl> <kw>extends</kw> <cl>Factory</cl>
+{
+    <kw>public function</kw> <fn>definition</fn>(): <kw>array</kw>
+    {
+        <va>$name</va> = <va>$this</va>-><va>faker</va>-><fn>words</fn>(<nu>3</nu>, <kw>true</kw>);
+
+        <kw>return</kw> [
+            <str>'vendor_id'</str>   => <cl>User</cl>::<fn>factory</fn>()-><fn>vendor</fn>(),
+            <str>'category_id'</str> => <cl>Category</cl>::<fn>inRandomOrder</fn>()-><fn>first</fn>()-><va>id</va>,
+            <str>'name'</str>        => <fn>ucwords</fn>(<va>$name</va>),
+            <str>'slug'</str>        => <cl>Str</cl>::<fn>slug</fn>(<va>$name</va>) . <str>'-'</str> . <fn>rand</fn>(<nu>100</nu>, <nu>999</nu>),
+            <str>'description'</str> => <va>$this</va>-><va>faker</va>-><fn>paragraphs</fn>(<nu>3</nu>, <kw>true</kw>),
+            <str>'price'</str>       => <va>$this</va>-><va>faker</va>-><fn>randomFloat</fn>(<nu>2</nu>, <nu>5</nu>, <nu>500</nu>),
+            <str>'stock'</str>       => <va>$this</va>-><va>faker</va>-><fn>numberBetween</fn>(<nu>0</nu>, <nu>200</nu>),
+            <str>'status'</str>      => <va>$this</va>-><va>faker</va>-><fn>randomElement</fn>([<str>'active'</str>, <str>'active'</str>, <str>'inactive'</str>]),
+            <str>'is_featured'</str> => <va>$this</va>-><va>faker</va>-><fn>boolean</fn>(<nu>20</nu>),
+            <str>'sku'</str>         => <fn>strtoupper</fn>(<va>$this</va>-><va>faker</va>-><fn>unique</fn>()-><fn>bothify</fn>(<str>'??##-####'</str>)),
+        ];
+    }
+}
+
+<cm>// ProductSeeder creates 200 products across all vendors</cm>
+<cl>Product</cl>::<fn>factory</fn>()-><fn>count</fn>(<nu>200</nu>)-><fn>create</fn>();
+</pre></div>
+</div>
+
+<!-- ======================== CONTROLLERS ======================== -->
+<div class="section" id="controllers">
+  <div class="section-title">Controllers</div>
+  <div class="section-sub">15+ controllers covering all system functionality with clean RESTful design and service layer architecture.</div>
+
+  <div class="card-grid">
+    <div class="card">
+      <span class="badge-pill b-purple">Admin</span>
+      <h3>Admin Controllers</h3>
+      <ul>
+        <li>DashboardController</li>
+        <li>UserManagementController</li>
+        <li>VendorApprovalController</li>
+        <li>CategoryController</li>
+        <li>CouponController</li>
+        <li>ReportController</li>
+        <li>SettingsController</li>
+      </ul>
+    </div>
+    <div class="card">
+      <span class="badge-pill b-teal">Vendor</span>
+      <h3>Vendor Controllers</h3>
+      <ul>
+        <li>VendorDashboardController</li>
+        <li>ProductController</li>
+        <li>VendorOrderController</li>
+        <li>VendorProfileController</li>
+        <li>StoreController</li>
+      </ul>
+    </div>
+    <div class="card">
+      <span class="badge-pill b-blue">Customer</span>
+      <h3>Customer Controllers</h3>
+      <ul>
+        <li>ShopController (browse)</li>
+        <li>CartController</li>
+        <li>CheckoutController</li>
+        <li>OrderController</li>
+        <li>WishlistController</li>
+        <li>ReviewController</li>
+        <li>ProfileController</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="file-label">app/Http/Controllers/Vendor/ProductController.php</div>
+  <div class="code-block"><pre>
+<kw>class</kw> <cl>ProductController</cl> <kw>extends</kw> <cl>Controller</cl>
+{
+    <kw>public function</kw> <fn>__construct</fn>(<kw>private</kw> <kw>readonly</kw> <cl>ProductService</cl> <va>$productService</va>)
+    {
+        <va>$this</va>-><fn>middleware</fn>(<str>'auth'</str>);
+        <va>$this</va>-><fn>middleware</fn>(<str>'role:vendor,admin'</str>);
+    }
+
+    <kw>public function</kw> <fn>index</fn>(): <cl>View</cl>
+    {
+        <va>$products</va> = <fn>auth</fn>()-><fn>user</fn>()-><va>products</va>()
+            -><fn>with</fn>([<str>'category'</str>, <str>'variants'</str>])
+            -><fn>latest</fn>()
+            -><fn>paginate</fn>(<nu>15</nu>);
+
+        <kw>return</kw> <fn>view</fn>(<str>'vendor.products.index'</str>, <fn>compact</fn>(<str>'products'</str>));
+    }
+
+    <kw>public function</kw> <fn>store</fn>(<cl>StoreProductRequest</cl> <va>$request</va>): <cl>RedirectResponse</cl>
+    {
+        <va>$product</va> = <va>$this</va>-><va>productService</va>-><fn>create</fn>(
+            <fn>auth</fn>()-><fn>user</fn>(),
+            <va>$request</va>-><fn>validated</fn>(),
+            <va>$request</va>-><fn>file</fn>(<str>'images'</str>)
+        );
+
+        <kw>return</kw> <fn>redirect</fn>()-><fn>route</fn>(<str>'vendor.products.show'</str>, <va>$product</va>)
+                    -><fn>with</fn>(<str>'success'</str>, <str>'Product created! Pending admin review.'</str>);
+    }
+
+    <kw>public function</kw> <fn>update</fn>(<cl>UpdateProductRequest</cl> <va>$request</va>, <cl>Product</cl> <va>$product</va>): <cl>RedirectResponse</cl>
+    {
+        <va>$this</va>-><fn>authorize</fn>(<str>'update'</str>, <va>$product</va>);  <cm>// ProductPolicy check</cm>
+
+        <va>$this</va>-><va>productService</va>-><fn>update</fn>(<va>$product</va>, <va>$request</va>-><fn>validated</fn>());
+
+        <kw>return</kw> <fn>back</fn>()-><fn>with</fn>(<str>'success'</str>, <str>'Product updated successfully.'</str>);
+    }
+
+    <kw>public function</kw> <fn>destroy</fn>(<cl>Product</cl> <va>$product</va>): <cl>RedirectResponse</cl>
+    {
+        <va>$this</va>-><fn>authorize</fn>(<str>'delete'</str>, <va>$product</va>);
+        <va>$product</va>-><fn>delete</fn>();  <cm>// soft delete</cm>
+
+        <kw>return</kw> <fn>redirect</fn>()-><fn>route</fn>(<str>'vendor.products.index'</str>)
+                    -><fn>with</fn>(<str>'success'</str>, <str>'Product deleted.'</str>);
+    }
+}
+</pre></div>
+
+  <div class="file-label">app/Http/Controllers/Customer/CheckoutController.php</div>
+  <div class="code-block"><pre>
+<kw>class</kw> <cl>CheckoutController</cl> <kw>extends</kw> <cl>Controller</cl>
+{
+    <kw>public function</kw> <fn>__construct</fn>(
+        <kw>private</kw> <kw>readonly</kw> <cl>CartService</cl>     <va>$cart</va>,
+        <kw>private</kw> <kw>readonly</kw> <cl>OrderService</cl>    <va>$orders</va>,
+        <kw>private</kw> <kw>readonly</kw> <cl>PaymentService</cl>  <va>$payments</va>,
+    ) {}
+
+    <kw>public function</kw> <fn>show</fn>(): <cl>View</cl>
+    {
+        <va>$cartItems</va>  = <va>$this</va>-><va>cart</va>-><fn>getItems</fn>(<fn>auth</fn>()-><fn>user</fn>());
+        <va>$addresses</va>  = <fn>auth</fn>()-><fn>user</fn>()-><va>addresses</va>;
+        <va>$totals</va>     = <va>$this</va>-><va>cart</va>-><fn>calculateTotals</fn>(<va>$cartItems</va>);
+
+        <kw>return</kw> <fn>view</fn>(<str>'checkout.index'</str>, <fn>compact</fn>(<str>'cartItems'</str>, <str>'addresses'</str>, <str>'totals'</str>));
+    }
+
+    <kw>public function</kw> <fn>placeOrder</fn>(<cl>PlaceOrderRequest</cl> <va>$request</va>): <cl>RedirectResponse</cl>
+    {
+        <va>$order</va> = <va>$this</va>-><va>orders</va>-><fn>createFromCart</fn>(
+            <fn>auth</fn>()-><fn>user</fn>(),
+            <va>$request</va>-><fn>validated</fn>()
+        );
+
+        <va>$paymentIntent</va> = <va>$this</va>-><va>payments</va>-><fn>createStripeIntent</fn>(<va>$order</va>);
+
+        <kw>return</kw> <fn>redirect</fn>()-><fn>route</fn>(<str>'checkout.payment'</str>, [
+            <str>'order'</str>  => <va>$order</va>-><va>id</va>,
+            <str>'intent'</str> => <va>$paymentIntent</va>-><va>client_secret</va>
+        ]);
+    }
+}
+</pre></div>
+
+  <h2>Service Layer</h2>
+  <p style="color:var(--text2); font-size:14px; margin-bottom:16px;">Fat controllers are bad practice. Business logic goes into Service classes:</p>
+  <div class="card-grid">
+    <div class="card"><h3>ProductService</h3><p>Handle image upload, slug generation, stock management, search/filter logic.</p></div>
+    <div class="card"><h3>CartService</h3><p>Add/remove items, quantity updates, coupon validation, totals calculation.</p></div>
+    <div class="card"><h3>OrderService</h3><p>Create orders from cart, generate order numbers, update status, send notifications.</p></div>
+    <div class="card"><h3>PaymentService</h3><p>Stripe PaymentIntent creation, webhook handling, refund processing.</p></div>
+    <div class="card"><h3>ReportService</h3><p>Sales reports, revenue calculations, vendor commissions, export to PDF/Excel.</p></div>
+    <div class="card"><h3>NotificationService</h3><p>Email & in-app notifications for order updates, vendor approvals, reviews.</p></div>
+  </div>
+</div>
+
+<!-- ======================== ROUTES ======================== -->
+<div class="section" id="routes">
+  <div class="section-title">Routes</div>
+  <div class="section-sub">All routes organized by role using middleware groups and resource routing.</div>
+
+  <div class="file-label">routes/web.php (structure overview)</div>
+  <div class="code-block"><pre>
+<cm>// Public routes — no auth required</cm>
+<cl>Route</cl>::<fn>get</fn>(<str>'/'</str>, [<cl>HomeController</cl>::<kw>class</kw>, <str>'index'</str>])-><fn>name</fn>(<str>'home'</str>);
+<cl>Route</cl>::<fn>get</fn>(<str>'/shop'</str>, [<cl>ShopController</cl>::<kw>class</kw>, <str>'index'</str>])-><fn>name</fn>(<str>'shop'</str>);
+<cl>Route</cl>::<fn>get</fn>(<str>'/products/{product:slug}'</str>, [<cl>ShopController</cl>::<kw>class</kw>, <str>'show'</str>])-><fn>name</fn>(<str>'products.show'</str>);
+<cl>Route</cl>::<fn>get</fn>(<str>'/categories/{category:slug}'</str>, [<cl>ShopController</cl>::<kw>class</kw>, <str>'category'</str>]);
+<cl>Route</cl>::<fn>get</fn>(<str>'/stores/{vendor}'</str>, [<cl>StoreController</cl>::<kw>class</kw>, <str>'show'</str>])-><fn>name</fn>(<str>'store.show'</str>);
+
+<cm>// Auth routes (Laravel Breeze)</cm>
+<fn>require</fn> <fn>__DIR__</fn>.<str>'/auth.php'</str>;
+
+<cm>// Customer routes (authenticated)</cm>
+<cl>Route</cl>::<fn>middleware</fn>([<str>'auth'</str>, <str>'role:customer'</str>])-><fn>prefix</fn>(<str>'customer'</str>)-><fn>name</fn>(<str>'customer.'</str>)-><fn>group</fn>(<kw>function</kw> () {
+    <cl>Route</cl>::<fn>resource</fn>(<str>'cart'</str>, <cl>CartController</cl>::<kw>class</kw>);
+    <cl>Route</cl>::<fn>resource</fn>(<str>'orders'</str>, <cl>OrderController</cl>::<kw>class</kw>)-><fn>only</fn>([<str>'index'</str>, <str>'show'</str>]);
+    <cl>Route</cl>::<fn>post</fn>(<str>'orders/{order}/cancel'</str>, [<cl>OrderController</cl>::<kw>class</kw>, <str>'cancel'</str>]);
+    <cl>Route</cl>::<fn>resource</fn>(<str>'wishlist'</str>, <cl>WishlistController</cl>::<kw>class</kw>);
+    <cl>Route</cl>::<fn>resource</fn>(<str>'reviews'</str>, <cl>ReviewController</cl>::<kw>class</kw>);
+    <cl>Route</cl>::<fn>get</fn>(<str>'checkout'</str>, [<cl>CheckoutController</cl>::<kw>class</kw>, <str>'show'</str>])-><fn>name</fn>(<str>'checkout'</str>);
+    <cl>Route</cl>::<fn>post</fn>(<str>'checkout'</str>, [<cl>CheckoutController</cl>::<kw>class</kw>, <str>'placeOrder'</str>]);
+    <cl>Route</cl>::<fn>resource</fn>(<str>'addresses'</str>, <cl>AddressController</cl>::<kw>class</kw>);
+});
+
+<cm>// Vendor routes</cm>
+<cl>Route</cl>::<fn>middleware</fn>([<str>'auth'</str>, <str>'role:vendor'</str>])-><fn>prefix</fn>(<str>'vendor'</str>)-><fn>name</fn>(<str>'vendor.'</str>)-><fn>group</fn>(<kw>function</kw> () {
+    <cl>Route</cl>::<fn>get</fn>(<str>'dashboard'</str>, [<cl>VendorDashboardController</cl>::<kw>class</kw>, <str>'index'</str>]);
+    <cl>Route</cl>::<fn>resource</fn>(<str>'products'</str>, <cl>ProductController</cl>::<kw>class</kw>);
+    <cl>Route</cl>::<fn>resource</fn>(<str>'orders'</str>, <cl>VendorOrderController</cl>::<kw>class</kw>)-><fn>only</fn>([<str>'index'</str>, <str>'show'</str>, <str>'update'</str>]);
+    <cl>Route</cl>::<fn>get</fn>(<str>'revenue'</str>, [<cl>VendorRevenueController</cl>::<kw>class</kw>, <str>'index'</str>]);
+});
+
+<cm>// Admin routes</cm>
+<cl>Route</cl>::<fn>middleware</fn>([<str>'auth'</str>, <str>'role:admin'</str>])-><fn>prefix</fn>(<str>'admin'</str>)-><fn>name</fn>(<str>'admin.'</str>)-><fn>group</fn>(<kw>function</kw> () {
+    <cl>Route</cl>::<fn>get</fn>(<str>'dashboard'</str>, [<cl>DashboardController</cl>::<kw>class</kw>, <str>'index'</str>]);
+    <cl>Route</cl>::<fn>resource</fn>(<str>'users'</str>, <cl>UserManagementController</cl>::<kw>class</kw>);
+    <cl>Route</cl>::<fn>resource</fn>(<str>'categories'</str>, <cl>CategoryController</cl>::<kw>class</kw>);
+    <cl>Route</cl>::<fn>resource</fn>(<str>'coupons'</str>, <cl>CouponController</cl>::<kw>class</kw>);
+    <cl>Route</cl>::<fn>post</fn>(<str>'vendors/{user}/approve'</str>, [<cl>VendorApprovalController</cl>::<kw>class</kw>, <str>'approve'</str>]);
+    <cl>Route</cl>::<fn>get</fn>(<str>'reports'</str>, [<cl>ReportController</cl>::<kw>class</kw>, <str>'index'</str>]);
+    <cl>Route</cl>::<fn>get</fn>(<str>'reports/export'</str>, [<cl>ReportController</cl>::<kw>class</kw>, <str>'export'</str>]);
+});
+</pre></div>
+
+  <h2>Key Routes at a Glance</h2>
+  <div class="routes-box">
+    <div class="route-row header"><span>Method</span><span>URI</span><span class="rh-name">Name</span><span class="rh-ctrl">Controller</span></div>
+    <div class="route-row"><span class="method get">GET</span><span class="route-path">/shop</span><span class="route-name">shop.index</span><span>ShopController</span></div>
+    <div class="route-row"><span class="method get">GET</span><span class="route-path">/products/{slug}</span><span class="route-name">products.show</span><span>ShopController</span></div>
+    <div class="route-row"><span class="method post">POST</span><span class="route-path">/customer/cart</span><span class="route-name">customer.cart.store</span><span>CartController</span></div>
+    <div class="route-row"><span class="method post">POST</span><span class="route-path">/customer/checkout</span><span class="route-name">customer.checkout</span><span>CheckoutController</span></div>
+    <div class="route-row"><span class="method get">GET</span><span class="route-path">/customer/orders</span><span class="route-name">customer.orders.index</span><span>OrderController</span></div>
+    <div class="route-row"><span class="method get">GET</span><span class="route-path">/vendor/dashboard</span><span class="route-name">vendor.dashboard</span><span>VendorDashboard</span></div>
+    <div class="route-row"><span class="method post">POST</span><span class="route-path">/vendor/products</span><span class="route-name">vendor.products.store</span><span>ProductController</span></div>
+    <div class="route-row"><span class="method put">PUT</span><span class="route-path">/vendor/orders/{id}</span><span class="route-name">vendor.orders.update</span><span>VendorOrderCtrl</span></div>
+    <div class="route-row"><span class="method get">GET</span><span class="route-path">/admin/dashboard</span><span class="route-name">admin.dashboard</span><span>DashboardCtrl</span></div>
+    <div class="route-row"><span class="method post">POST</span><span class="route-path">/admin/vendors/{id}/approve</span><span class="route-name">admin.vendors.approve</span><span>VendorApproval</span></div>
+    <div class="route-row"><span class="method del">DELETE</span><span class="route-path">/admin/users/{id}</span><span class="route-name">admin.users.destroy</span><span>UserMgmtCtrl</span></div>
+  </div>
+</div>
+
+<!-- ======================== STRUCTURE ======================== -->
+<div class="section" id="structure">
+  <div class="section-title">Project Structure</div>
+  <div class="section-sub">Clean Laravel folder structure following best practices for a large application.</div>
+
+  <div class="tree">
+<span class="dir">shopzone/</span>
+├── <span class="dir">app/</span>
+│   ├── <span class="dir">Http/</span>
+│   │   ├── <span class="dir">Controllers/</span>
+│   │   │   ├── <span class="dir">Admin/</span>     <span class="gray">← DashboardController, UserMgmtController...</span>
+│   │   │   ├── <span class="dir">Vendor/</span>    <span class="gray">← ProductController, VendorOrderController...</span>
+│   │   │   ├── <span class="dir">Customer/</span>  <span class="gray">← CartController, CheckoutController...</span>
+│   │   │   └── <span class="dir">Auth/</span>      <span class="gray">← RegisterController, LoginController...</span>
+│   │   ├── <span class="dir">Middleware/</span>   <span class="gray">← RoleMiddleware, VendorApprovedMiddleware</span>
+│   │   └── <span class="dir">Requests/</span>     <span class="gray">← Form request validation classes</span>
+│   ├── <span class="dir">Models/</span>
+│   │   ├── <span class="file">User.php</span>        <span class="gray">← HasRoles, HasProducts, HasOrders</span>
+│   │   ├── <span class="file">Product.php</span>     <span class="gray">← BelongsToVendor, HasVariants, HasReviews</span>
+│   │   ├── <span class="file">Order.php</span>       <span class="gray">← HasItems, BelongsToCustomer</span>
+│   │   ├── <span class="file">Category.php</span>    <span class="gray">← HasParent (self-referencing)</span>
+│   │   └── <span class="file">Review.php</span>      <span class="gray">← BelongsToProduct, Approvable</span>
+│   ├── <span class="dir">Services/</span>         <span class="gray">← Business logic layer</span>
+│   │   ├── <span class="file">ProductService.php</span>
+│   │   ├── <span class="file">CartService.php</span>
+│   │   ├── <span class="file">OrderService.php</span>
+│   │   └── <span class="file">PaymentService.php</span>
+│   ├── <span class="dir">Policies/</span>         <span class="gray">← ProductPolicy, OrderPolicy, ReviewPolicy</span>
+│   ├── <span class="dir">Events/</span>           <span class="gray">← OrderPlaced, OrderStatusChanged</span>
+│   ├── <span class="dir">Listeners/</span>        <span class="gray">← SendOrderConfirmation, NotifyVendor</span>
+│   ├── <span class="dir">Jobs/</span>             <span class="gray">← ProcessPayment, SendBulkEmail</span>
+│   └── <span class="dir">Observers/</span>        <span class="gray">← ProductObserver (update rating)</span>
+├── <span class="dir">database/</span>
+│   ├── <span class="dir">migrations/</span>       <span class="gray">← 20+ migration files</span>
+│   ├── <span class="dir">seeders/</span>          <span class="gray">← 10+ seeder files</span>
+│   └── <span class="dir">factories/</span>        <span class="gray">← 8+ factory files</span>
+├── <span class="dir">resources/views/</span>
+│   ├── <span class="dir">admin/</span>            <span class="gray">← Admin panel Blade views</span>
+│   ├── <span class="dir">vendor/</span>           <span class="gray">← Vendor dashboard views</span>
+│   ├── <span class="dir">customer/</span>         <span class="gray">← Customer-facing views</span>
+│   ├── <span class="dir">shop/</span>             <span class="gray">← Product listing, search</span>
+│   ├── <span class="dir">checkout/</span>         <span class="gray">← Cart, checkout, payment views</span>
+│   └── <span class="dir">layouts/</span>          <span class="gray">← app.blade.php, admin.blade.php</span>
+└── <span class="dir">routes/</span>
+    ├── <span class="file">web.php</span>           <span class="gray">← All web routes</span>
+    └── <span class="file">auth.php</span>          <span class="gray">← Auth routes</span>
+  </div>
+
+  <h2>Key Models & Relationships</h2>
+  <div class="file-label">app/Models/User.php</div>
+  <div class="code-block"><pre>
+<kw>class</kw> <cl>User</cl> <kw>extends</kw> <cl>Authenticatable</cl>
+{
+    <kw>use</kw> <cl>HasRoles</cl>, <cl>HasFactory</cl>, <cl>Notifiable</cl>, <cl>SoftDeletes</cl>;
+
+    <cm>// Relationships</cm>
+    <kw>public function</kw> <fn>vendorProfile</fn>(): <cl>HasOne</cl>
+    {
+        <kw>return</kw> <va>$this</va>-><fn>hasOne</fn>(<cl>VendorProfile</cl>::<kw>class</kw>);
+    }
+
+    <kw>public function</kw> <fn>products</fn>(): <cl>HasMany</cl>
+    {
+        <kw>return</kw> <va>$this</va>-><fn>hasMany</fn>(<cl>Product</cl>::<kw>class</kw>, <str>'vendor_id'</str>);
+    }
+
+    <kw>public function</kw> <fn>orders</fn>(): <cl>HasMany</cl>
+    {
+        <kw>return</kw> <va>$this</va>-><fn>hasMany</fn>(<cl>Order</cl>::<kw>class</kw>);
+    }
+
+    <kw>public function</kw> <fn>addresses</fn>(): <cl>HasMany</cl>
+    {
+        <kw>return</kw> <va>$this</va>-><fn>hasMany</fn>(<cl>Address</cl>::<kw>class</kw>);
+    }
+
+    <kw>public function</kw> <fn>cartItems</fn>(): <cl>HasMany</cl>
+    {
+        <kw>return</kw> <va>$this</va>-><fn>hasMany</fn>(<cl>CartItem</cl>::<kw>class</kw>);
+    }
+
+    <kw>public function</kw> <fn>wishlists</fn>(): <cl>BelongsToMany</cl>
+    {
+        <kw>return</kw> <va>$this</va>-><fn>belongsToMany</fn>(<cl>Product</cl>::<kw>class</kw>, <str>'wishlists'</str>)-><fn>withTimestamps</fn>();
+    }
+
+    <cm>// Scopes</cm>
+    <kw>public function</kw> <fn>scopeVendors</fn>(<va>$query</va>) { <kw>return</kw> <va>$query</va>-><fn>role</fn>(<str>'vendor'</str>); }
+    <kw>public function</kw> <fn>scopeCustomers</fn>(<va>$query</va>) { <kw>return</kw> <va>$query</va>-><fn>role</fn>(<str>'customer'</str>); }
+}
+</pre></div>
+</div>
+
+<!-- ======================== FEATURES ======================== -->
+<div class="section" id="features">
+  <div class="section-title">All Features</div>
+  <div class="section-sub">Complete list of functionalities to implement for a high-grade graduation project.</div>
+
+  <h2>Authentication & Users</h2>
+  <div class="checklist">
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>Register / Login / Logout</b><span>Laravel Breeze + remember_me functionality</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>Email Verification</b><span>MustVerifyEmail interface + queue-based mail</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>Password Reset</b><span>Forgot password flow with token expiry</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>Profile Management</b><span>Update name, email, password, avatar upload</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>Role-Based Dashboards</b><span>Redirect to correct dashboard after login based on role</span></div></div>
+  </div>
+
+  <h2>Product Features</h2>
+  <div class="checklist">
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>Product CRUD</b><span>Full create/read/update/delete with validation</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>Multiple Image Upload</b><span>Drag & drop, resize with Intervention Image, cloud storage</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>Categories & Subcategories</b><span>Nested categories with parent_id (breadcrumb navigation)</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>Product Variants</b><span>Size, color, material with individual stock tracking</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>Advanced Search & Filter</b><span>By category, price range, rating, vendor, tags — Livewire</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>Low Stock Alerts</b><span>Email notification to vendor when stock &lt; 5</span></div></div>
+  </div>
+
+  <h2>Order & Payment</h2>
+  <div class="checklist">
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>Shopping Cart</b><span>Persistent cart in DB (not session), works across devices</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>Coupon System</b><span>Percentage + fixed discount, usage limits, expiry dates</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>Stripe Payment</b><span>PaymentIntent API, card UI, webhook for confirmation</span></div></div>
+    <!-- <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>Order Status Tracking</b><span>Timeline view: Pending → Confirmed → Shipped → Delivered</span></div></div> -->
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>Invoice PDF Generation</b><span>DomPDF or Snappy to generate downloadable invoices</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>Refund Handling</b><span>Admin can process Stripe refunds from dashboard</span></div></div>
+  </div>
+
+  <h2>Admin Features</h2>
+  <div class="checklist">
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>Sales Analytics Dashboard</b><span>Chart.js graphs: daily sales, revenue by category, top products</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>Vendor Approval System</b><span>Review vendor applications, approve/reject with email notification</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>User Ban / Activate</b><span>Soft-ban users, block login access</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>Review Moderation</b><span>Approve/reject product reviews before going public</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>Reports Export</b><span>Export sales/orders to Excel (Maatwebsite) and PDF</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done">✓</div><div class="check-text"><b>Activity Log</b><span>Track all admin actions with timestamp and IP</span></div></div>
+  </div>
+
+  <h2>Extra Features (Bonus)</h2>
+  <div class="checklist">
+    <div class="check-item"><div class="check-dot dot-todo">○</div><div class="check-text"><b>Real-time Notifications</b><span>Laravel Echo + Pusher for live order updates</span></div></div>
+    <div class="check-item"><div class="check-dot dot-todo">○</div><div class="check-text"><b>Multi-language Support</b><span>Laravel localization (Arabic / English)</span></div></div>
+    <div class="check-item"><div class="check-dot dot-todo">○</div><div class="check-text"><b>RESTful API</b><span>Mobile-ready JSON API with Sanctum token auth</span></div></div>
+    <div class="check-item"><div class="check-dot dot-todo">○</div><div class="check-text"><b>Product Recommendations</b><span>Simple "you may also like" based on same category</span></div></div>
+  </div>
+</div>
+
+<!-- ======================== TIMELINE ======================== -->
+<div class="section" id="timeline">
+  <div class="section-title">Development Timeline</div>
+  <div class="section-sub">A 16-week plan for one student to complete the full project solo.</div>
+
+  <div class="checklist">
+    <div class="check-item"><div class="check-dot dot-done" style="background:var(--purple-bg);color:var(--purple-dark)">1-2</div><div class="check-text"><b>Setup & Planning (Week 1–2)</b><span>Install Laravel, configure MySQL, design ERD diagram, plan routes, install packages (Breeze, Spatie Permission, Livewire)</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done" style="background:var(--blue-bg);color:var(--blue-dark)">3-4</div><div class="check-text"><b>Auth & User Roles (Week 3–4)</b><span>Migrations for users, roles/permissions seeder, register/login/verify, role-based redirects, profile management</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done" style="background:var(--teal-bg);color:var(--teal-dark)">5-6</div><div class="check-text"><b>Products & Categories (Week 5–6)</b><span>Category CRUD, product CRUD with image upload, variants, vendor dashboard, admin product approval</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done" style="background:var(--amber-bg);color:var(--amber-dark)">7-8</div><div class="check-text"><b>Shop & Search (Week 7–8)</b><span>Public product listing, Livewire filters, search, product detail page with reviews, wishlist</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done" style="background:var(--coral-bg);color:var(--coral-dark)">9-10</div><div class="check-text"><b>Cart & Checkout (Week 9–10)</b><span>Cart system, coupon validation, address management, checkout flow, Stripe PaymentIntent integration</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done" style="background:var(--green-bg);color:var(--green-dark)">11-12</div><div class="check-text"><b>Orders & Notifications (Week 11–12)</b><span>Order creation, status management, email notifications with queues, invoice PDF, vendor order view</span></div></div>
+    <div class="check-item"><div class="check-dot dot-done" style="background:var(--pink-bg);color:var(--pink-dark)">13-14</div><div class="check-text"><b>Admin Dashboard & Reports (Week 13–14)</b><span>Analytics with Chart.js, sales reports, vendor approvals, user management, coupon system, activity logs</span></div></div>
+    <div class="check-item"><div class="check-dot dot-todo">15</div><div class="check-text"><b>Testing & Polish (Week 15)</b><span>Write Pest tests (unit + feature), fix bugs, improve UI, optimize queries with eager loading</span></div></div>
+    <div class="check-item"><div class="check-dot dot-todo">16</div><div class="check-text"><b>Documentation & Deployment (Week 16)</b><span>Write README, API docs, deploy to shared hosting or VPS (DigitalOcean), record demo video</span></div></div>
+  </div>
+
+  <h2>Required Packages</h2>
+  <div class="code-block"><pre>
+<cm># Install via Composer</cm>
+composer require spatie/laravel-permission       <cm># Roles & permissions</cm>
+composer require laravel/breeze                  <cm># Auth scaffolding</cm>
+composer require livewire/livewire               <cm># Reactive UI</cm>
+composer require intervention/image              <cm># Image processing</cm>
+composer require barryvdh/laravel-dompdf         <cm># PDF generation</cm>
+composer require maatwebsite/excel               <cm># Excel export</cm>
+composer require stripe/stripe-php               <cm># Stripe payments</cm>
+composer require spatie/laravel-activitylog      <cm># Activity logging</cm>
+
+<cm># Dev dependencies</cm>
+composer require --dev laravel/telescope         <cm># Debugging</cm>
+composer require --dev pestphp/pest             <cm># Testing</cm>
+composer require --dev barryvdh/laravel-debugbar <cm># Debug bar</cm>
+
+<cm># NPM (frontend)</cm>
+npm install alpinejs @alpinejs/mask             <cm># Alpine.js</cm>
+npm install chart.js                            <cm># Charts</cm>
+</pre></div>
+
+  <h2>Grading Tips</h2>
+  <div class="card-grid">
+    <div class="card" style="border-left: 3px solid var(--purple-mid)">
+      <h3>Code Quality</h3>
+      <p>Use Form Requests for validation, Service classes for business logic, Policies for authorization. Avoid fat controllers.</p>
+    </div>
+    <div class="card" style="border-left: 3px solid var(--teal-mid)">
+      <h3>Database Design</h3>
+      <p>Proper foreign keys, indexes on searched columns, use soft deletes for products/users. Normalize to 3NF at minimum.</p>
+    </div>
+    <div class="card" style="border-left: 3px solid var(--blue-mid)">
+      <h3>Security</h3>
+      <p>CSRF on all forms, policy checks on every action, SQL injection safe (use Eloquent), XSS protection via Blade escaping.</p>
+    </div>
+    <div class="card" style="border-left: 3px solid var(--amber-mid)">
+      <h3>Testing</h3>
+      <p>Write at least 20 Pest tests covering auth, product CRUD, order flow, and permission checks. Run with <code>php artisan test</code>.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  function show(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
